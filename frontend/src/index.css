@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-950 text-dark-50 font-sans antialiased;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(217, 70, 239, 0.1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(217, 70, 239, 0.1) 0px, transparent 50%);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display font-bold;
+  }
+}
+
+@layer components {
+
+  /* Glass morphism effect */
+  .glass {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10;
+  }
+
+  .glass-strong {
+    @apply bg-white/10 backdrop-blur-2xl border border-white/20;
+  }
+
+  /* Neon glow effects */
+  .glow-primary {
+    box-shadow:
+      0 0 10px rgba(14, 165, 233, 0.3),
+      0 0 20px rgba(14, 165, 233, 0.2),
+      0 0 30px rgba(14, 165, 233, 0.1);
+  }
+
+  .glow-accent {
+    box-shadow:
+      0 0 10px rgba(217, 70, 239, 0.3),
+      0 0 20px rgba(217, 70, 239, 0.2),
+      0 0 30px rgba(217, 70, 239, 0.1);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 via-accent-400 to-primary-400 bg-clip-text text-transparent;
+    background-size: 200% auto;
+    animation: shimmer 3s linear infinite;
+  }
+
+  /* Card styles */
+  .card {
+    @apply glass rounded-2xl p-6 transition-all duration-300;
+  }
+
+  .card-hover {
+    @apply card hover:bg-white/10 hover:border-white/30 hover:shadow-xl hover:-translate-y-1;
+  }
+
+  /* Button styles */
+  .btn {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white shadow-lg hover:shadow-primary-500/50;
+  }
+
+  .btn-accent {
+    @apply btn bg-gradient-to-r from-accent-600 to-accent-500 hover:from-accent-500 hover:to-accent-400 text-white shadow-lg hover:shadow-accent-500/50;
+  }
+
+  .btn-ghost {
+    @apply btn glass hover:bg-white/10;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-4 py-3 glass rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* News card specific */
+  .news-card {
+    @apply relative overflow-hidden rounded-2xl glass cursor-pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .news-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-primary-500/20 to-accent-500/20 opacity-0 transition-opacity duration-300;
+  }
+
+  .news-card:hover::before {
+    @apply opacity-100;
+  }
+
+  .news-card:hover {
+    @apply border-primary-500/50 shadow-2xl;
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  /* Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-dark-900 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-primary-600 rounded-full hover:bg-primary-500;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+}
