@@ -1,21 +1,19 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15-alpine
     container_name: newsportal-db
     environment:
-      POSTGRES_DB: newsportal
-      POSTGRES_USER: newsportal_user
-      POSTGRES_PASSWORD: newsportal_pass
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - newsportal-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U newsportal_user -d newsportal"]
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,13 +22,13 @@ services:
     image: redis:7-alpine
     container_name: newsportal-redis
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - redis_data:/data
     networks:
       - newsportal-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,47 +37,46 @@ services:
     image: rabbitmq:3-management-alpine
     container_name: newsportal-rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: newsportal
-      RABBITMQ_DEFAULT_PASS: newsportal_pass
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
-      - "5672:5672"   # AMQP port
+      - "${RABBITMQ_PORT}:5672" # AMQP port
       - "15672:15672" # Management UI
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - newsportal-network
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 30s
       timeout: 10s
       retries: 5
-
-  # Backend will be added once built
-  # backend:
-  #   build: ./backend
-  #   container_name: newsportal-backend
-  #   environment:
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/newsportal
-  #     SPRING_DATASOURCE_USERNAME: newsportal_user
-  #     SPRING_DATASOURCE_PASSWORD: newsportal_pass
-  #     SPRING_REDIS_HOST: redis
-  #     SPRING_RABBITMQ_HOST: rabbitmq
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #     rabbitmq:
-  #       condition: service_healthy
-  #   networks:
-  #     - newsportal-network
+  backend:
+    build: ./backend
+    container_name: newsportal-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_REDIS_HOST: newsportal-redis
+      SPRING_RABBITMQ_HOST: newsportal-rabbitmq
+    ports:
+      - "${APP_PORT}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - newsportal-network
 
 volumes:
   postgres_data:
   redis_data:
   rabbitmq_data:
+
 
 networks:
   newsportal-network:

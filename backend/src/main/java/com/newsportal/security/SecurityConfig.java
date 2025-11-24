@@ -49,6 +49,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/news", "/api/news/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/news/*/comments").permitAll()
 
+                        // Swagger / OpenAPI endpoints
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**")
+                        .permitAll()
+
                         // Authenticated endpoints
                         .requestMatchers(HttpMethod.POST, "/api/news/*/comments").authenticated()
 
